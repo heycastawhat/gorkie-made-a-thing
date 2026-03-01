@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorkie Made a Thing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #050505;
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.7), 0 0 20px rgba(0, 242, 255, 0.5);
+        }
+        .neon-border {
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+            border: 1px solid rgba(0, 242, 255, 0.5);
+        }
+        .neon-border:hover {
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.7);
+            border: 1px solid rgba(0, 242, 255, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-300 min-h-screen flex flex-col items-center justify-center p-6">
+
+    <header class="text-center mb-12">
+        <h1 class="text-5xl md:text-7xl font-black text-white mb-4 tracking-tighter neon-text">
+            GORKIE MADE A THING
+        </h1>
+        <p class="text-slate-500 uppercase tracking-widest text-sm">Experimental Web Lab & Simulations</p>
+    </header>
+
+    <main class="w-full max-w-2xl">
+        <div class="grid gap-6">
+            <!-- Featured Project -->
+            <a href="/bees/gorkie.html" class="group block p-8 rounded-2xl bg-slate-900/50 neon-border transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+                            The 60,000 Bee Swarm
+                        </h2>
+                        <p class="mt-2 text-slate-400">
+                            A high-performance particle simulation featuring thousands of neon bees responding to your every move.
+                        </p>
+                    </div>
+                    <div class="text-cyan-500 group-hover:translate-x-2 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <span class="px-2 py-1 text-[10px] bg-cyan-950 text-cyan-400 rounded border border-cyan-800 uppercase font-bold">Canvas API</span>
+                    <span class="px-2 py-1 text-[10px] bg-cyan-950 text-cyan-400 rounded border border-cyan-800 uppercase font-bold">Optimization</span>
+                </div>
+            </a>
+
+            <!-- Placeholder for future things -->
+            <div class="p-8 rounded-2xl bg-slate-900/20 border border-slate-800 opacity-50 cursor-not-allowed">
+                <h2 class="text-xl font-bold text-slate-600 italic">More things coming soon...</h2>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20 text-slate-600 text-xs">
+        &copy; 2026 Gorkie &bull; Built with Tailwind and pure curiosity.
+    </footer>
+
+</body>
+</html>
