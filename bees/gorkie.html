@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON HIVE: 60,000 BEES</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050505;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            z-index: 100;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+        .stats {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .controls {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div class="stats">BEES ACTIVE: <span id="count">0</span></div>
+        <div class="controls">MOUSE: ATTRACT | CLICK: PULSE | SPACE: SHUFFLE</div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        const countEl = document.getElementById('count');
+
+        let width, height;
+        const BEE_COUNT = 60000;
+        
+        // Use TypedArrays for high performance (60,000 particles)
+        const posX = new Float32Array(BEE_COUNT);
+        const posY = new Float32Array(BEE_COUNT);
+        const velX = new Float32Array(BEE_COUNT);
+        const velY = new Float32Array(BEE_COUNT);
+
+        const mouse = { x: -1000, y: -1000, down: false };
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            for (let i = 0; i < BEE_COUNT; i++) {
+                posX[i] = Math.random() * width;
+                posY[i] = Math.random() * height;
+                velX[i] = (Math.random() - 0.5) * 2;
+                velY[i] = (Math.random() - 0.5) * 2;
+            }
+            countEl.textContent = BEE_COUNT.toLocaleString();
+        }
+
+        window.addEventListener('resize', init);
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mousedown', () => mouse.down = true);
+        window.addEventListener('mouseup', () => mouse.down = false);
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                for (let i = 0; i < BEE_COUNT; i++) {
+                    velX[i] *= 10;
+                    velY[i] *= 10;
+                }
+            }
+        });
+
+        function update() {
+            const mx = mouse.x;
+            const my = mouse.y;
+            const isDown = mouse.down;
+            const pull = isDown ? 0.3 : 0.08;
+            const friction = 0.96;
+
+            for (let i = 0; i < BEE_COUNT; i++) {
+                // Vector to mouse
+                const dx = mx - posX[i];
+                const dy = my - posY[i];
+                const distSq = dx * dx + dy * dy;
+                const dist = Math.sqrt(distSq);
+
+                // Swarm behavior/Attraction
+                if (dist < 400) {
+                    const f = (1 - dist / 400) * pull;
+                    velX[i] += dx * f * 0.05;
+                    velY[i] += dy * f * 0.05;
+                }
+
+                // Mouse Pulse (Click)
+                if (isDown && dist < 100) {
+                    velX[i] -= dx * 0.1;
+                    velY[i] -= dy * 0.1;
+                }
+
+                // Add slight jitter
+                velX[i] += (Math.random() - 0.5) * 0.15;
+                velY[i] += (Math.random() - 0.5) * 0.15;
+
+                // Physics
+                velX[i] *= friction;
+                velY[i] *= friction;
+                posX[i] += velX[i];
+                posY[i] += velY[i];
+
+                // Wrap boundaries
+                if (posX[i] < 0) posX[i] = width;
+                else if (posX[i] > width) posX[i] = 0;
+                if (posY[i] < 0) posY[i] = height;
+                else if (posY[i] > height) posY[i] = 0;
+            }
+        }
+
+        function draw() {
+            // Neon Trail Effect
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Fast drawing using 1x1 rects for "bees"
+            // Using a single color for batch efficiency
+            ctx.fillStyle = '#ffcc00';
+            
+            // To make it look "cool" and neon, we vary color slightly every 10k bees
+            // but keep loops tight.
+            for (let i = 0; i < BEE_COUNT; i++) {
+                if (i === 20000) ctx.fillStyle = '#00ffcc';
+                if (i === 40000) ctx.fillStyle = '#ff0066';
+                
+                ctx.fillRect(posX[i], posY[i], 1.5, 1.5);
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        init();
+        loop();
+    </script>
+</body>
+</html>
